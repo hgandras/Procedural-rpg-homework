@@ -7,6 +7,7 @@ interface HasCombatStats {
     var hitpoints: Int
     var attack: Int
     var defense: Int
+    var statusEffectApplied: Boolean
 
     fun takeDamage(amount: Int) {
         hitpoints -= amount
