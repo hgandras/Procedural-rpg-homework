@@ -1,0 +1,54 @@
+package cz.cuni.gamedev.nail123.roguelike
+
+import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
+import cz.cuni.gamedev.nail123.roguelike.world.World
+import cz.cuni.gamedev.nail123.roguelike.world.worlds.DungeonWorld
+import cz.cuni.gamedev.nail123.roguelike.world.worlds.SampleJavaWorld
+import cz.cuni.gamedev.nail123.roguelike.world.worlds.SampleWorld
+import org.hexworks.zircon.api.ColorThemes
+import org.hexworks.zircon.api.application.AppConfig
+import org.hexworks.zircon.api.data.Size3D
+
+object GameConfig {
+    fun defaultWorld(): World = SampleJavaWorld()
+
+    const val DUNGEON_LEVELS = 15
+    val THEME = ColorThemes.zenburnVanilla()
+
+    const val SIDEBAR_WIDTH = 18
+    const val LOG_AREA_HEIGHT = 8
+
+    const val WINDOW_WIDTH = 80
+    const val WINDOW_HEIGHT = 50
+
+    //If this is large, compared to the size the generated rooms the dungeon contains more of the maze.
+    const val X_ROOM_OFFSET_MAX = 10
+    const val Y_ROOM_OFFSET_MAX = 3
+
+    //To control number of rooms
+    const val AREA_SPLITS = 5
+
+    //Room contents
+    const val MAX_ENEMIES = 3
+    const val MAX_CHESTS = 1
+
+    val VISIBLE_WIDTH = WINDOW_WIDTH - SIDEBAR_WIDTH
+    val VISIBLE_HEIGHT = WINDOW_HEIGHT - LOG_AREA_HEIGHT
+
+    val VISIBLE_SIZE = Size3D.create(
+            VISIBLE_WIDTH,
+            VISIBLE_HEIGHT,
+            1
+    )
+
+    // If you want to have larger-than-screen areas and scrolling, modify this
+    //val AREA_SIZE = VISIBLE_SIZE
+    val AREA_SIZE = Size3D.create(100, 66, 1)
+
+
+    fun buildAppConfig() = AppConfig.newBuilder()
+            .enableBetaFeatures()
+            .withSize(WINDOW_WIDTH, WINDOW_HEIGHT)
+            .withDefaultTileset(GameTiles.defaultCharTileset)
+            .build()
+}
