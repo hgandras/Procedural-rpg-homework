@@ -5,6 +5,7 @@ import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Orc
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Rat
 import cz.cuni.gamedev.nail123.roguelike.entities.items.Item
 import cz.cuni.gamedev.nail123.roguelike.entities.items.Sword
+import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Poison
 import kotlin.random.Random
 
 object LootSystem {
@@ -43,9 +44,9 @@ object LootSystem {
 
     val rnd = Random.Default
 
-    val simpleSword = SingleDrop{ Sword(rnd.nextInt(3) + 2) }
+    val simpleSword = SingleDrop{ Sword(rnd.nextInt(3) + 2, Poison(1,1)) }
 
-    val greatSword = SingleDrop{ Sword(rnd.nextInt(5) + 5) }
+    val greatSword = SingleDrop{ Sword(rnd.nextInt(5) + 5, Poison(1,1)) }
 
     val enemyDrops = mapOf(
         Rat::class to TreasureClass(1, listOf(

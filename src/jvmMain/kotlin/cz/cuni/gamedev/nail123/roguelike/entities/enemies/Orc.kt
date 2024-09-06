@@ -16,7 +16,7 @@ class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
     override var hitpoints = 5
     override var attack = 1
     override var defense = 0
-
+    override var statusEffectApplied: Boolean = false
 
     var nextPos = room.area.randomPos()
 

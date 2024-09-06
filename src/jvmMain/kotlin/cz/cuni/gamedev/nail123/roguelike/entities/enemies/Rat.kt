@@ -16,6 +16,7 @@ class Rat(room: Room): Enemy(GameTiles.RAT,room), HasSmell {
     override var hitpoints = 6
     override var attack = 3
     override var defense = 0
+    override var statusEffectApplied: Boolean = false
 
     override fun update() {
         if (Pathfinding.chebyshev(position, area.player.position) <= smellingRadius) {
