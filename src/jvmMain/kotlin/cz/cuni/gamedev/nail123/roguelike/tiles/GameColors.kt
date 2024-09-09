@@ -9,7 +9,7 @@ object GameColors {
     val FLOOR_FOREGROUND = TileColor.fromString("#3C3F41")
     val FLOOR_BACKGROUND = TileColor.fromString("#232322")
 
-    val ACCENT_COLOR = TileColor.fromString("#FFCD22")
+    val ACCENT_COLOR = TileColor.fromString("#FF0000")
     val OBJECT_FOREGROUND = TileColor.fromString("#FCA903")
 
     val STAIRS_FOREGROUND = TileColor.fromString("#00A10D")

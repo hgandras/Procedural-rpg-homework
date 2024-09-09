@@ -23,7 +23,6 @@ abstract class Enemy(tile: Tile, val room : Room = Room.empty()): MovingEntity(t
 
     override fun die() {
         super.die()
-
         LootSystem.onDeath(this)
     }
 

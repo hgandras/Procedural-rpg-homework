@@ -1,12 +1,13 @@
 package cz.cuni.gamedev.nail123.roguelike.entities.enemies
 
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasVision
-import cz.cuni.gamedev.nail123.roguelike.mechanics.Navigation
 import cz.cuni.gamedev.nail123.roguelike.mechanics.Vision
+import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
+import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.goSmartlyTowards
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
-import org.hexworks.zircon.api.data.Position3D
+
 
 class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
     override val blocksVision = false
@@ -16,7 +17,7 @@ class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
     override var hitpoints = 5
     override var attack = 1
     override var defense = 0
-    override var statusEffectApplied: Boolean = false
+    override var statusEffect: Effect = NoEffect()
 
     var nextPos = room.area.randomPos()
 
@@ -41,7 +42,6 @@ class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
             //If stuck
             if(position.compareTo(prevPos) == 0)
                 nextPos = room.area.randomPos()
-
         }
     }
 }

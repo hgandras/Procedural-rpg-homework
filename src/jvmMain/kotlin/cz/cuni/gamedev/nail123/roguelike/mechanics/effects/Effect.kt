@@ -9,5 +9,5 @@ interface Effect {
 
     var time: Int
 
-    fun statusEffect(entity : HasCombatStats)
+    fun tick(entity : HasCombatStats)
 }

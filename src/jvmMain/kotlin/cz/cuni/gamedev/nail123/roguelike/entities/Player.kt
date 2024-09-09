@@ -6,8 +6,11 @@ import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasVision
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.Inventory
 import cz.cuni.gamedev.nail123.roguelike.events.GameOver
 import cz.cuni.gamedev.nail123.roguelike.events.logMessage
+import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
+import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
+import kotlin.reflect.jvm.internal.impl.metadata.ProtoBuf
 
 class Player: MovingEntity(GameTiles.PLAYER), HasVision, HasCombatStats, HasInventory {
     override val visionRadius = 9
@@ -18,7 +21,7 @@ class Player: MovingEntity(GameTiles.PLAYER), HasVision, HasCombatStats, HasInve
     override var hitpoints = 1000000
     override var attack = 5
     override var defense = 1
-    override var statusEffectApplied: Boolean = false
+    override var statusEffect: Effect = NoEffect()
 
     override val inventory = Inventory(this)
 
