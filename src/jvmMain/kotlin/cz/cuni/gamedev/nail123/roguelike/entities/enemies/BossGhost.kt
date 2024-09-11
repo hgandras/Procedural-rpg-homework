@@ -2,7 +2,6 @@ package cz.cuni.gamedev.nail123.roguelike.entities.enemies
 
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasVision
 import cz.cuni.gamedev.nail123.roguelike.events.logMessage
-import cz.cuni.gamedev.nail123.roguelike.mechanics.Navigation
 import cz.cuni.gamedev.nail123.roguelike.mechanics.Vision
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
@@ -11,10 +10,10 @@ import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
 import kotlin.random.Random
 
-//This boss spawns other enemies, like rats and orcs. Until you kill all spawned enemies,
-// it teleports around the room every few steps, but does not attack you. Otherwise, it just chases the player.
+//IDEA: This boss spawns other enemies, like rats and orcs. Until you kill all spawned enemies,
+//it teleports around the room every few steps, but does not attack you. Otherwise, it just chases the player.
 //
-//Idea: The ghost is strong when it does not have any summons, and it is hard to damage it, however, you can
+// The ghost is strong when it does not have any summons, and it is hard to damage it, however, you can
 //chase it down while the summons are active, and deal big damage to it. Just be careful to not die to the summons
 //The number of summons increases when the ghost has low hitpoints
 class BossGhost(roomID : Int) : Enemy(GameTiles.BOSS_GHOST, roomID),HasVision {
@@ -43,7 +42,6 @@ class BossGhost(roomID : Int) : Enemy(GameTiles.BOSS_GHOST, roomID),HasVision {
 
     override fun update() {
         super.update()
-        this.logMessage(state.toString())
         val playerPosition = area.player.position
         val inSameRoom = room.inRoom(playerPosition)
         //Heal if player exits the room
