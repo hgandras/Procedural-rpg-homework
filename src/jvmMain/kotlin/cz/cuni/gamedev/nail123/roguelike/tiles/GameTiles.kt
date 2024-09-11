@@ -24,8 +24,11 @@ object GameTiles {
     val STAIRS_DOWN = graphicalTile("Stairs down")
     val STAIRS_UP = graphicalTile("Stairs up")
     val BLACK = characterTile(' ', GameColors.BLACK, GameColors.BLACK)
+
+    //Collectibles
     val CHEST = graphicalTile("Chest")
     val POTION = graphicalTile("Potion")
+    val RING = graphicalTile("Ring")
 
     //Enemies
     val RAT = graphicalTile("Rat")

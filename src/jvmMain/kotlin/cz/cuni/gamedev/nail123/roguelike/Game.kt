@@ -35,7 +35,6 @@ class Game(val world: World = GameConfig.defaultWorld()) {
             list.add(Drop(i))
             list.add(ToggleEquip(i))
         }
-
         return list
     }
 

@@ -9,7 +9,7 @@ import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
 
 
-class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
+class Orc(roomID : Int = -1) : Enemy(GameTiles.ORC,roomID), HasVision{
     override val blocksVision = false
     override val visionRadius = 7
 
@@ -18,7 +18,8 @@ class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
     override var attack = 1
     override var defense = 0
     override var statusEffect: Effect = NoEffect()
-
+    override var weaponStatusEffect: Effect = NoEffect()
+    var room = Room.rooms[roomID]
     var nextPos = room.area.randomPos()
 
     //If the orc can see the player it starts chasing it. Stays within the assigned room
@@ -26,9 +27,8 @@ class Orc(room : Room = Room.empty()) : Enemy(GameTiles.ORC,room), HasVision{
         val prevPos = position
 
         val playerPosition = area.player.position
-        val playerInSameRoom = playerPosition.x < room.area.maxX && playerPosition.x> room.area.minX && playerPosition.y < room.area.maxY && playerPosition.y>room.area.minY
 
-        val canSeePlayer = playerPosition in Vision.getVisiblePositionsFrom(area,position,visionRadius) && playerInSameRoom
+        val canSeePlayer = playerPosition in Vision.getVisiblePositionsFrom(area,position,visionRadius) && room.inRoom(playerPosition)
         if (canSeePlayer) {
             goSmartlyTowards(playerPosition)
         }

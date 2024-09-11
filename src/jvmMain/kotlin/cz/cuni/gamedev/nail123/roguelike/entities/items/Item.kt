@@ -6,7 +6,7 @@ import cz.cuni.gamedev.nail123.roguelike.entities.attributes.*
 import cz.cuni.gamedev.nail123.roguelike.events.logMessage
 import org.hexworks.zircon.api.data.Tile
 
-abstract class Item(tile: Tile): GameEntity(tile), Interactable {
+abstract class Item(tile: Tile, val name : String): GameEntity(tile), Interactable {
     override val blocksMovement = false
     override val blocksVision = false
     var isEquipped = false

@@ -18,7 +18,7 @@ class Stairs(val leadDown: Boolean = true): GameEntity(
 
     override fun acceptInteractFrom(other: GameEntity, type: InteractionType) = interactionContext(other, type) {
         withEntity<Player>(InteractionType.STEPPED_ON) {
-            if (leadDown) area.world.moveDown() else area.world.moveUp()
+            if (leadDown && it.ringsCollected == it.ringsToCollect) area.world.moveDown() else if (it.ringsCollected == it.ringsToCollect) area.world.moveUp()
         }
     }
 }

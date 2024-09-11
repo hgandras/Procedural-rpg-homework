@@ -1,6 +1,7 @@
 package cz.cuni.gamedev.nail123.roguelike.mechanics.effects
 
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasCombatStats
+import cz.cuni.gamedev.nail123.roguelike.events.logMessage
 
 class FireEffect(override val strength: Int) : Effect {
     override val maxTime = 5
@@ -12,6 +13,7 @@ class FireEffect(override val strength: Int) : Effect {
             entity.statusEffect = NoEffect()
             return
         }
+        this.logMessage("burnt for 1 hp")
         time++
         entity.hitpoints-=multiplier * strength
     }

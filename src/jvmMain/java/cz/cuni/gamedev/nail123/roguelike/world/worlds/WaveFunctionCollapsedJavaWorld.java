@@ -2,6 +2,7 @@ package cz.cuni.gamedev.nail123.roguelike.world.worlds;
 
 import cz.cuni.gamedev.nail123.roguelike.GameConfig;
 import cz.cuni.gamedev.nail123.roguelike.entities.objects.Stairs;
+import cz.cuni.gamedev.nail123.roguelike.entities.unplacable.FogOfWar;
 import cz.cuni.gamedev.nail123.roguelike.mechanics.Pathfinding;
 import cz.cuni.gamedev.nail123.roguelike.world.Area;
 import cz.cuni.gamedev.nail123.roguelike.world.builders.AreaBuilder;
@@ -30,6 +31,8 @@ public class WaveFunctionCollapsedJavaWorld extends DungeonWorld {
                 Position3D.create(0, 0, 0),
                 areaSize
         );
+
+        area.addEntity(new FogOfWar(), Position3D.unknown());
 
         // Add stairs up
         if (floor > 0) area.addEntity(new Stairs(false), area.getPlayer().getPosition());

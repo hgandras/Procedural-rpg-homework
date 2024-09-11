@@ -9,10 +9,10 @@ interface HasCombatStats {
     var attack: Int
     var defense: Int
     var statusEffect : Effect
+    var weaponStatusEffect : Effect
 
     fun takeDamage(amount: Int) {
         hitpoints -= amount
-        statusEffect.tick(this)
         if (hitpoints <= 0) {
             hitpoints = 0
             die()

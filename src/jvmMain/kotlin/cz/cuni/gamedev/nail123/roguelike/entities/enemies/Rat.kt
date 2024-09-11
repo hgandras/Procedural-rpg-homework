@@ -8,7 +8,7 @@ import cz.cuni.gamedev.nail123.roguelike.mechanics.goBlindlyTowards
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
 
-class Rat(room: Room): Enemy(GameTiles.RAT,room), HasSmell {
+class Rat(roomID: Int = -1): Enemy(GameTiles.RAT,roomID), HasSmell {
     override val blocksMovement = true
     override val blocksVision = false
     override val smellingRadius = 7
@@ -18,6 +18,7 @@ class Rat(room: Room): Enemy(GameTiles.RAT,room), HasSmell {
     override var attack = 3
     override var defense = 0
     override var statusEffect: Effect = NoEffect()
+    override var weaponStatusEffect: Effect= NoEffect()
 
     override fun update() {
         if (Pathfinding.chebyshev(position, area.player.position) <= smellingRadius) {

@@ -41,10 +41,10 @@ class SampleWorld: World() {
 
         // Add some rats to each level
         repeat(currentLevel + 1) {
-            areaBuilder.addAtEmptyPosition(Rat(Room.empty()), Position3D.defaultPosition(), areaBuilder.size)
+            areaBuilder.addAtEmptyPosition(Rat(0), Position3D.defaultPosition(), areaBuilder.size)
         }
         // We add fog of war such that exploration is needed
-//        areaBuilder.addEntity(FogOfWar(), Position3D.unknown())
+        areaBuilder.addEntity(FogOfWar(), Position3D.unknown())
 
         // Build it into a full Area
         return areaBuilder.build()

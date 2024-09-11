@@ -3,6 +3,7 @@ package cz.cuni.gamedev.nail123.roguelike.mechanics
 import cz.cuni.gamedev.nail123.roguelike.entities.Player
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasCombatStats
 import cz.cuni.gamedev.nail123.roguelike.events.logMessage
+import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
 import kotlin.math.max
 
 object Combat {
@@ -13,6 +14,8 @@ object Combat {
     fun attack(attacker: HasCombatStats, defender: HasCombatStats) {
         val damage = max(attacker.attack - defender.defense, 0)
         defender.takeDamage(damage)
+        if(attacker is Player && defender.statusEffect is NoEffect)
+            defender.statusEffect = attacker.weaponStatusEffect
 
         when {
             attacker is Player -> this.logMessage("You hit $defender for $damage damage!")

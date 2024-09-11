@@ -6,10 +6,11 @@ import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 
-class Sword(val attackPower: Int, elementType : Effect  = NoEffect()): Weapon(GameTiles.SWORD, elementType) {
+class Sword(val attackPower: Int, elementType : Effect  = NoEffect(), name : String = "Sword"): Weapon(GameTiles.SWORD, elementType, name) {
     override fun onEquip(character: HasInventory) {
         if (character is Player) {
             character.attack += attackPower
+            character.weaponStatusEffect = effect
         }
     }
 
@@ -20,6 +21,6 @@ class Sword(val attackPower: Int, elementType : Effect  = NoEffect()): Weapon(Ga
     }
 
     override fun toString(): String {
-        return "Sword($attackPower)"
+        return "$name($attackPower)"
     }
 }

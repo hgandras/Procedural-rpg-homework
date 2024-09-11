@@ -22,10 +22,12 @@ class Player: MovingEntity(GameTiles.PLAYER), HasVision, HasCombatStats, HasInve
     override var attack = 5
     override var defense = 1
     override var statusEffect: Effect = NoEffect()
-
+    override var weaponStatusEffect : Effect = NoEffect()
     override val inventory = Inventory(this)
 
-    lateinit var currentRoom : Room
+    var ringsCollected : Int = 0
+    val ringsToCollect : Int = 4
+
 
     override fun die() {
         super.die()

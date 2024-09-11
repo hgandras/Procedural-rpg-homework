@@ -5,6 +5,8 @@ import cz.cuni.gamedev.nail123.roguelike.world.World
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.DungeonWorld
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.SampleJavaWorld
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.SampleWorld
+import cz.cuni.gamedev.nail123.roguelike.world.worlds.WaveFunctionCollapsedJavaWorld
+import cz.cuni.gamedev.nail123.roguelike.world.worlds.WaveFunctionCollapsedWorld
 import org.hexworks.zircon.api.ColorThemes
 import org.hexworks.zircon.api.application.AppConfig
 import org.hexworks.zircon.api.data.Size3D

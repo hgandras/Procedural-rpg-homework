@@ -50,13 +50,13 @@ object LootSystem {
     val rnd = Random.Default
 
     //Weapons
-    val simpleSword = SingleDrop{ Sword(rnd.nextInt(3) + 3, NoEffect()) }
-    val fireSword = SingleDrop{Sword(rnd.nextInt(2) + 1,FireEffect(1))}
-    val poisonSword = SingleDrop{Sword(rnd.nextInt(3) + 2, Poison(1))}
+    val simpleSword = SingleDrop{ Sword(rnd.nextInt(3) + 3, NoEffect(), "Sword") }
+    val fireSword = SingleDrop{Sword(rnd.nextInt(2) + 1,FireEffect(1), "Fire Sword")}
+    val poisonSword = SingleDrop{Sword(rnd.nextInt(3) + 2, Poison(1), "Poison Sword")}
 
-    val strongSword = SingleDrop{Sword(rnd.nextInt(4) + 4, NoEffect())}
-    val fireStrongSword = SingleDrop{Sword(rnd.nextInt(3) + 2, FireEffect(1))}
-    val poisonStrongSword = SingleDrop{Sword(rnd.nextInt(4) + 3,Poison(1))}
+    val strongSword = SingleDrop{Sword(rnd.nextInt(4) + 4, NoEffect(), "Sword+")}
+    val fireStrongSword = SingleDrop{Sword(rnd.nextInt(3) + 2, FireEffect(1), "Fire Sword+")}
+    val poisonStrongSword = SingleDrop{Sword(rnd.nextInt(4) + 3,Poison(1), "Poison Sword+")}
 
     val potion = SingleDrop{ Potion() }
 
@@ -66,10 +66,7 @@ object LootSystem {
             1 to simpleSword
         )),
         Orc::class to TreasureClass(1, listOf(
-            4 to NoDrop,
-            2 to simpleSword,
-            1 to fireSword,
-            1 to poisonSword
+            1 to fireSword
         ))
     )
 

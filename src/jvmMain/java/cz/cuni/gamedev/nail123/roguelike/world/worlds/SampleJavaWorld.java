@@ -8,8 +8,10 @@ import cz.cuni.gamedev.nail123.roguelike.entities.GameEntity;
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Enemy;
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Orc;
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Rat;
+import cz.cuni.gamedev.nail123.roguelike.entities.items.Ring;
 import cz.cuni.gamedev.nail123.roguelike.entities.objects.Chest;
 import cz.cuni.gamedev.nail123.roguelike.entities.objects.Stairs;
+import cz.cuni.gamedev.nail123.roguelike.entities.unplacable.FogOfWar;
 import cz.cuni.gamedev.nail123.roguelike.events.LoggedEvent;
 import cz.cuni.gamedev.nail123.roguelike.mechanics.Pathfinding;
 import cz.cuni.gamedev.nail123.roguelike.world.Area;
@@ -22,6 +24,7 @@ import org.hexworks.zircon.api.data.Position3D;
 import org.hexworks.zircon.api.data.Size3D;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class SampleJavaWorld extends World {
@@ -40,12 +43,12 @@ public class SampleJavaWorld extends World {
         // Start with an empty area
         AreaBuilder areaBuilder = (new EmptyAreaBuilder()).create();
 
+
         Box baseArea = new Box(0,0,areaBuilder.getWidth()-2,areaBuilder.getHeight()-2);
         SplitTree wallsTree = new SplitTree(baseArea,GameConfig.AREA_SPLITS);
 
         ObservableMap<Position3D, GameBlock> blocksMap;
         GameBlock[] blocks = new GameBlock[areaBuilder.getWidth() * areaBuilder.getHeight()];
-        ArrayList<Room> rooms = new ArrayList<>();
 
         //PLACING MAZE
         Maze maze = new Maze((areaBuilder.getHeight() - 1) / 2,   (areaBuilder.getWidth() -1)/ 2);
@@ -97,7 +100,6 @@ public class SampleJavaWorld extends World {
 
         //PLACING ROOMS
         Random rnd = new Random();
-        int roomID = 0;
         for(SplitTree.Node node: wallsTree.nodes)
         {
             //If it is a leaf node, create random offsets for the room sizes
@@ -110,7 +112,7 @@ public class SampleJavaWorld extends World {
                 int roomMaxY = (int)Math.floor(node.box.maxY) - offsetYMax;
 
                 //Save the room
-                rooms.add(new Room(new Box(roomMinX,roomMinY,roomMaxX,roomMaxY),roomID));
+                Room.rooms.add(new Room(new Box(roomMinX,roomMinY,roomMaxX,roomMaxY)));
 
                 for(int x = roomMinX + 1; x < roomMaxX ;x++)
                 {
@@ -119,28 +121,26 @@ public class SampleJavaWorld extends World {
                         blocks[ x + y * areaBuilder.getWidth() ] = new Floor();
                     }
                 }
-                roomID++;
             }
         }
 
         //Add start and end positions
-        Box start_room = rooms.getFirst().area;
-        Box goal_room = rooms.getLast().area;
+        Box start_room = Room.rooms.getFirst().area;
+        Box goal_room = Room.rooms.getLast().area;
 
         Position3D goal = Position3D.create((int)goal_room.minX + 1, (int)goal_room.minY + 1, 0);
         System.out.println(goal.getX() + " " + goal.getY());
         System.out.println(blocks[goal.getY() * areaBuilder.getWidth() + goal.getX()]);
         //GENERATE MAP
         blocksMap = generateMap(areaBuilder.getWidth(), areaBuilder.getHeight(), blocks);
-
         areaBuilder.setBlocks(blocksMap);
 
         //ADDING ROOM WALLS
-        System.out.println(rooms.size());
         //Shuffling the rooms, and the wall coordinates later is important to create more diverse room patterns, because if they are not shuffled,
         //the checking by the floodfill will always generate a similar pattern with the room exits.
-        Collections.shuffle(rooms);
-        for(Room room: rooms)
+        ArrayList<Room> shuffledRooms = Room.rooms;
+        Collections.shuffle(shuffledRooms);
+        for(Room room: shuffledRooms)
         {
             ArrayList<Pair<Integer,Integer>> wallCoords = getWallCoords(room.area);
             Collections.shuffle(wallCoords);
@@ -159,9 +159,9 @@ public class SampleJavaWorld extends World {
                     areaBuilder.setBlocks(blocksMap);
                     Map<Position3D,Integer> reached_positions = Pathfinding.INSTANCE.floodFill(currentRoom,areaBuilder,Pathfinding.INSTANCE.getFourDirectional(),Pathfinding.INSTANCE.getDoorOpening());
 
-                    int reachedPoss = getReachedPoss(reached_positions, goal, rooms);
+                    int reachedPoss = getReachedPoss(reached_positions, goal, Room.rooms);
 
-                    if(reachedPoss<rooms.size() + 1)
+                    if(reachedPoss<Room.rooms.size() + 1)
                     {
                         blocks[y*areaBuilder.getWidth() + x] = new Floor();
                         blocksMap = generateMap(areaBuilder.getWidth(), areaBuilder.getHeight(), blocks);
@@ -171,20 +171,32 @@ public class SampleJavaWorld extends World {
             }
         }
 
+        //Populate rooms
+        placeRings(areaBuilder,areaBuilder.getPlayer().getRingsToCollect());
         placeInRoom(areaBuilder, start_room, areaBuilder.getPlayer());
-
         // Place the stairs at an empty location in the top-right quarter
         placeInRoom(areaBuilder, goal_room, new Stairs());
 
-        //Add entities to rooms
-        int roomNum = 0;
-        for(Room room : rooms)
+        for(int roomID = 0;roomID< Room.rooms.size();roomID++  )
         {
-            placeEnemies(areaBuilder,room);
-            placeChests(areaBuilder,room);
-            roomNum++;
+            placeEnemies(areaBuilder,roomID);
+            placeChests(areaBuilder,roomID);
         }
+
+        areaBuilder.addEntity(new FogOfWar(),Position3D.unknown());
         return areaBuilder.build();
+    }
+
+    private void placeRings(AreaBuilder area, int numRings) {
+        List<Integer> ints = new ArrayList<>();
+        for(int i = 0;i<numRings;i++)
+            ints.add(i);
+        Collections.shuffle(ints);
+        ints = ints.subList(0,numRings);
+        for(int i : ints)
+        {
+            placeInRoom(area,Room.rooms.get(i).area,new Ring());
+        }
     }
 
     private static int getReachedPoss(Map<Position3D, Integer> reached_positions, Position3D goal, ArrayList<Room> rooms) {
@@ -220,6 +232,7 @@ public class SampleJavaWorld extends World {
                 if(blocks[index] != null)
                     blocksMap.put(Position3D.create(x,y,0),blocks[index]);
             }
+        blocksMap.put(Position3D.unknown(),new Floor());
         return blocksMap;
     }
 
@@ -247,36 +260,33 @@ public class SampleJavaWorld extends World {
         );
     }
 
-    private void placeEnemies(AreaBuilder area, Room room)
+    private void placeEnemies(AreaBuilder area, int roomID)
     {
+        Room room = Room.rooms.get(roomID);
         Random rnd = new Random();
         int numEnemies = rnd.nextInt(1,GameConfig.MAX_ENEMIES);
         for(int i = 0; i<numEnemies; i++)
         {
             Enemies enemyType = Enemies.values()[rnd.nextInt(Enemies.values().length)];
-            Enemy enemy = new Rat(room);
-            switch (enemyType)
-            {
-                case Enemies.RAT:
-                    enemy = new Rat(room);
-                    break;
-                case Enemies.ORC:
-                    enemy = new Orc(room);
-                    room.addEnemy(new Orc(room));
-                    break;
-            }
+            new Rat(roomID);
+
+            Enemy enemy = switch (enemyType) {
+                case Enemies.RAT -> new Rat(roomID);
+                case Enemies.ORC -> new Orc(roomID);
+            };
+
             room.addEnemy(enemy);
             placeInRoom(area,room.area,enemy);
         }
     }
 
-    private void placeChests(AreaBuilder area, Room room)
+    private void placeChests(AreaBuilder area, int roomID)
     {
         Random rnd = new Random();
         int numChests = rnd.nextInt(GameConfig.MAX_CHESTS+1);
         for(int i = 0; i<numChests; i++)
         {
-            placeInRoom(area,room.area,new Chest());
+            placeInRoom(area,Room.rooms.get(roomID).area,new Chest(roomID));
         }
     }
 

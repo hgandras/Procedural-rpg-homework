@@ -6,7 +6,7 @@ import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
 import org.hexworks.zircon.api.data.Tile
 
-abstract class Weapon(tile: Tile, val effect : Effect = NoEffect()): Item(tile) {
+abstract class Weapon(tile: Tile, val effect : Effect = NoEffect(), name : String = ""): Item(tile, name) {
     override fun isEquipable(character: HasInventory): Inventory.EquipResult {
         return if (character.inventory.equipped.filterIsInstance<Weapon>().isNotEmpty()) {
             Inventory.EquipResult(false, "Cannot equip two weapons")
