@@ -51,7 +51,7 @@ object LootSystem {
 
     //Weapons
     val simpleSword = SingleDrop{ Sword(rnd.nextInt(3) + 3, NoEffect(), "Sword") }
-    val fireSword = SingleDrop{Sword(rnd.nextInt(2) + 1,FireEffect(1), "Fire Sword")}
+    val fireSword = SingleDrop{Sword(rnd.nextInt(2) + 1,FireEffect(10), "Fire Sword")}
     val poisonSword = SingleDrop{Sword(rnd.nextInt(3) + 2, Poison(1), "Poison Sword")}
 
     val strongSword = SingleDrop{Sword(rnd.nextInt(4) + 4, NoEffect(), "Sword+")}

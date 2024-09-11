@@ -21,6 +21,7 @@ class Rat(roomID: Int = -1): Enemy(GameTiles.RAT,roomID), HasSmell {
     override var weaponStatusEffect: Effect= NoEffect()
 
     override fun update() {
+        super.update()
         if (Pathfinding.chebyshev(position, area.player.position) <= smellingRadius) {
             goBlindlyTowards(area.player.position)
         }

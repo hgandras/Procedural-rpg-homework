@@ -23,16 +23,14 @@ abstract class Enemy(tile: Tile, val roomID : Int = -1): MovingEntity(tile), Has
     }
 
     override fun update() {
-        super.update()
         statusEffect.tick(this)
     }
 
     override fun die() {
-        super.die()
         val room = Room.rooms[roomID]
         room.removeEnemy(this)
-        this.logMessage(room.numEnemies().toString())
         LootSystem.onDeath(this)
+        super.die()
     }
 
 }

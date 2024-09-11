@@ -18,6 +18,7 @@ interface HasCombatStats {
             die()
         }
     }
+
     fun die() {
         (this as GameEntity?)?.area?.removeEntity(this)
     }

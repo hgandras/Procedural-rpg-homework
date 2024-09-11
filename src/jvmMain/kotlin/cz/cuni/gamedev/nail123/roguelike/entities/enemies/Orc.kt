@@ -13,8 +13,8 @@ class Orc(roomID : Int = -1) : Enemy(GameTiles.ORC,roomID), HasVision{
     override val blocksVision = false
     override val visionRadius = 7
 
-    override val maxHitpoints = 5
-    override var hitpoints = 5
+    override val maxHitpoints = 50
+    override var hitpoints = 50
     override var attack = 1
     override var defense = 0
     override var statusEffect: Effect = NoEffect()
@@ -24,6 +24,11 @@ class Orc(roomID : Int = -1) : Enemy(GameTiles.ORC,roomID), HasVision{
 
     //If the orc can see the player it starts chasing it. Stays within the assigned room
     override fun update() {
+        super.update()
+        //This is here, because the orc's sprite did not get removed because it moved one tile after it was dead, and
+        //that put the sprite on the next tile, and a drop on the previous
+        if(hitpoints<=0)
+            return
         val prevPos = position
 
         val playerPosition = area.player.position
