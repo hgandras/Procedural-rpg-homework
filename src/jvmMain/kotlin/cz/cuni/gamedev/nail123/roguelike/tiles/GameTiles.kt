@@ -33,6 +33,9 @@ object GameTiles {
     //Enemies
     val RAT = graphicalTile("Rat")
     val ORC = graphicalTile("Orc")
+    val BOSS_GHOST = graphicalTile("Ghost")
+    val BOSS_SNAKE = graphicalTile("Snake")
+    val BOSS_GOLEM = graphicalTile("Golem")
 
     //Weapons
     val SWORD = graphicalTile("Sword")

@@ -5,6 +5,7 @@ import cz.cuni.gamedev.nail123.roguelike.blocks.Floor;
 import cz.cuni.gamedev.nail123.roguelike.blocks.GameBlock;
 import cz.cuni.gamedev.nail123.roguelike.blocks.Wall;
 import cz.cuni.gamedev.nail123.roguelike.entities.GameEntity;
+import cz.cuni.gamedev.nail123.roguelike.entities.enemies.BossGhost;
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Enemy;
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Orc;
 import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Rat;
@@ -24,7 +25,6 @@ import org.hexworks.zircon.api.data.Position3D;
 import org.hexworks.zircon.api.data.Size3D;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class SampleJavaWorld extends World {
@@ -45,7 +45,7 @@ public class SampleJavaWorld extends World {
 
 
         Box baseArea = new Box(0,0,areaBuilder.getWidth()-2,areaBuilder.getHeight()-2);
-        SplitTree wallsTree = new SplitTree(baseArea,GameConfig.AREA_SPLITS);
+        SplitTree wallsTree = new SplitTree(baseArea,WorldConfig.AREA_SPLITS);
 
         ObservableMap<Position3D, GameBlock> blocksMap;
         GameBlock[] blocks = new GameBlock[areaBuilder.getWidth() * areaBuilder.getHeight()];
@@ -105,7 +105,7 @@ public class SampleJavaWorld extends World {
             //If it is a leaf node, create random offsets for the room sizes
             if(node.children == null)
             {
-                int offsetXMin = rnd.nextInt(GameConfig.X_ROOM_OFFSET_MAX), offsetXMax = rnd.nextInt(GameConfig.X_ROOM_OFFSET_MAX), offsetYMin = rnd.nextInt(GameConfig.Y_ROOM_OFFSET_MAX), offsetYMax = rnd.nextInt(GameConfig.Y_ROOM_OFFSET_MAX);
+                int offsetXMin = rnd.nextInt(WorldConfig.X_ROOM_OFFSET_MAX), offsetXMax = rnd.nextInt(WorldConfig.X_ROOM_OFFSET_MAX), offsetYMin = rnd.nextInt(WorldConfig.Y_ROOM_OFFSET_MAX), offsetYMax = rnd.nextInt(WorldConfig.Y_ROOM_OFFSET_MAX);
                 int roomMinX = (int)Math.floor(node.box.minX) + offsetXMin;
                 int roomMaxX = (int)Math.floor(node.box.maxX) - offsetXMax;
                 int roomMinY = (int)Math.floor(node.box.minY) + offsetYMin;
@@ -172,7 +172,7 @@ public class SampleJavaWorld extends World {
         }
 
         //Populate rooms
-        placeRings(areaBuilder,areaBuilder.getPlayer().getRingsToCollect());
+        placeBosses(areaBuilder);
         placeInRoom(areaBuilder, start_room, areaBuilder.getPlayer());
         // Place the stairs at an empty location in the top-right quarter
         placeInRoom(areaBuilder, goal_room, new Stairs());
@@ -187,15 +187,21 @@ public class SampleJavaWorld extends World {
         return areaBuilder.build();
     }
 
-    private void placeRings(AreaBuilder area, int numRings) {
+    enum Bosses{GHOST}
+
+    private void placeBosses(AreaBuilder area) {
         List<Integer> ints = new ArrayList<>();
-        for(int i = 0;i<numRings;i++)
+        int numBosses = Bosses.values().length;
+        for(int i = 0;i<numBosses;i++)
             ints.add(i);
         Collections.shuffle(ints);
-        ints = ints.subList(0,numRings);
+        ints = ints.subList(0,numBosses);
         for(int i : ints)
         {
-            placeInRoom(area,Room.rooms.get(i).area,new Ring());
+            Enemy boss = switch(Bosses.values()[i]) {
+                case Bosses.GHOST -> new BossGhost(i);
+            };
+            placeInRoom(area,Room.rooms.get(i).area,boss);
         }
     }
 
@@ -264,7 +270,7 @@ public class SampleJavaWorld extends World {
     {
         Room room = Room.rooms.get(roomID);
         Random rnd = new Random();
-        int numEnemies = rnd.nextInt(1,GameConfig.MAX_ENEMIES);
+        int numEnemies = rnd.nextInt(1,WorldConfig.MAX_ENEMIES);
         for(int i = 0; i<numEnemies; i++)
         {
             Enemies enemyType = Enemies.values()[rnd.nextInt(Enemies.values().length)];
@@ -283,7 +289,7 @@ public class SampleJavaWorld extends World {
     private void placeChests(AreaBuilder area, int roomID)
     {
         Random rnd = new Random();
-        int numChests = rnd.nextInt(GameConfig.MAX_CHESTS+1);
+        int numChests = rnd.nextInt(WorldConfig.MAX_CHESTS+1);
         for(int i = 0; i<numChests; i++)
         {
             placeInRoom(area,Room.rooms.get(roomID).area,new Chest(roomID));

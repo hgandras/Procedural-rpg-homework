@@ -6,7 +6,7 @@ public class WorldConfig {
     final static int Y_ROOM_OFFSET_MAX = 3;
 
     //To control number of rooms
-    final static int AREA_SPLITS = 5;
+    final static int AREA_SPLITS = 2;
 
     //Room contents
     final static int MAX_ENEMIES = 3;

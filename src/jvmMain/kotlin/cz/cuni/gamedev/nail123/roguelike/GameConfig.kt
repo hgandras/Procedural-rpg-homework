@@ -23,17 +23,6 @@ object GameConfig {
     const val WINDOW_WIDTH = 80
     const val WINDOW_HEIGHT = 50
 
-    //If this is large, compared to the size the generated rooms the dungeon contains more of the maze.
-    const val X_ROOM_OFFSET_MAX = 10
-    const val Y_ROOM_OFFSET_MAX = 3
-
-    //To control number of rooms
-    const val AREA_SPLITS = 5
-
-    //Room contents
-    const val MAX_ENEMIES = 3
-    const val MAX_CHESTS = 1
-
     val VISIBLE_WIDTH = WINDOW_WIDTH - SIDEBAR_WIDTH
     val VISIBLE_HEIGHT = WINDOW_HEIGHT - LOG_AREA_HEIGHT
 
@@ -44,8 +33,8 @@ object GameConfig {
     )
 
     // If you want to have larger-than-screen areas and scrolling, modify this
-    //val AREA_SIZE = VISIBLE_SIZE
-    val AREA_SIZE = Size3D.create(100, 66, 1)
+    val AREA_SIZE = VISIBLE_SIZE
+    //val AREA_SIZE = Size3D.create(100, 66, 1)
 
 
     fun buildAppConfig() = AppConfig.newBuilder()
