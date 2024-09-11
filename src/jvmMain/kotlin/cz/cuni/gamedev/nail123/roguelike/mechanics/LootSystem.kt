@@ -66,7 +66,7 @@ object LootSystem {
             1 to simpleSword
         )),
         Orc::class to TreasureClass(1, listOf(
-            1 to fireSword
+            1 to poisonSword
         ))
     )
 

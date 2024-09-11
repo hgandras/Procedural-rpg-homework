@@ -15,7 +15,7 @@ class Orc(roomID : Int = -1) : Enemy(GameTiles.ORC,roomID), HasVision{
 
     override val maxHitpoints = 50
     override var hitpoints = 50
-    override var attack = 1
+    override var attack = 4
     override var defense = 0
     override var statusEffect: Effect = NoEffect()
     override var weaponStatusEffect: Effect = NoEffect()
