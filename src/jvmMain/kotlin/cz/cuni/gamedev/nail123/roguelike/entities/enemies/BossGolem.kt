@@ -1,13 +1,13 @@
 package cz.cuni.gamedev.nail123.roguelike.entities.enemies
 
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasVision
+import cz.cuni.gamedev.nail123.roguelike.events.logMessage
 import cz.cuni.gamedev.nail123.roguelike.mechanics.Vision
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.goSmartlyTowards
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
-import org.hexworks.zircon.api.data.Position3D
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -16,7 +16,7 @@ import kotlin.random.Random
 //and they have a cast time. The golem can not attack(its attack damage becomes 0) after
 //a big ability, because it needs to rest. That is the time of window to kill it. Otherwise, it does basic combat,
 //and has huge defense.
-class GolemBoss(roomID:Int) : Enemy(GameTiles.BOSS_GOLEM,roomID),HasVision {
+class BossGolem(roomID:Int) : Enemy(GameTiles.BOSS_GOLEM,roomID),HasVision {
     override val blocksVision: Boolean = false
     override val visionRadius = 100
     override val maxHitpoints: Int = 100
@@ -61,6 +61,7 @@ class GolemBoss(roomID:Int) : Enemy(GameTiles.BOSS_GOLEM,roomID),HasVision {
             }
             if(rnd.nextFloat()<STATE_CHANGE_CHANCE)
             {
+                this.logMessage("AAAUUAAAARRGGGGHHH!!!!!") //Message to not make it too obvious that you have to go away
                 state = State.CHARGE_ATTACK
                 defense = 10000
                 attack = 0
@@ -77,6 +78,7 @@ class GolemBoss(roomID:Int) : Enemy(GameTiles.BOSS_GOLEM,roomID),HasVision {
                     area.player.takeDamage(20)
                 }
                 charge_step = 0
+                this.logMessage("The Golem seems tired")
                 state = State.RESTING
             }
         }
