@@ -1,6 +1,7 @@
 package cz.cuni.gamedev.nail123.roguelike.entities.enemies
 
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.HasVision
+import cz.cuni.gamedev.nail123.roguelike.events.logMessage
 import cz.cuni.gamedev.nail123.roguelike.mechanics.Vision
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.Effect
 import cz.cuni.gamedev.nail123.roguelike.mechanics.effects.NoEffect
@@ -9,12 +10,13 @@ import cz.cuni.gamedev.nail123.roguelike.mechanics.goSmartlyTowards
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
 import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
 import kotlin.math.abs
+import kotlin.math.min
 import kotlin.math.round
 import kotlin.random.Random
 
 //IDEA: The snake boss has a special healing ability, and is faster than you. The snake can also poison you
-//with its attacks (reduces attack damage).
-class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE),HasVision {
+//with its attacks (reduces attack damage). Healing attacks start, when it loses about 30 percent of its hp
+class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE,roomID),HasVision {
         override val blocksVision: Boolean = false
         override val visionRadius = 100
         override val maxHitpoints: Int = 100
@@ -41,6 +43,7 @@ class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE),HasVision {
         val HEAL_STEPS = 10
         val MAX_HEAL_PRECENT = 0.2
         val MIN_HEAL_PERCENT = 0.1
+        val HEAL_MOVE_THRESHOLD = 0.3
 
         override fun update() {
                 super.update()
@@ -71,29 +74,34 @@ class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE),HasVision {
                                 poison_step++
                         }
 
-                        if(rnd.nextFloat()<HEALING_ATTACK_CHANCE)
+                        if(hitpoints/maxHitpoints<HEAL_MOVE_THRESHOLD && rnd.nextFloat()<HEALING_ATTACK_CHANCE)
                                 state = State.CHOOSE_POS
                 }
                 else if(state == State.CHOOSE_POS)
                 {
                         var healPos = room.area.randomPos()
                         var diff = healPos - area.player.position
-                        while(abs(diff.x) < HEAL_DISTANCE_FROM_PLAYER || abs(diff.y) < HEAL_DISTANCE_FROM_PLAYER )
+                        while(abs(diff.x) < HEAL_DISTANCE_FROM_PLAYER && abs(diff.y) < HEAL_DISTANCE_FROM_PLAYER )
                         {
                                 healPos = room.area.randomPos()
                                 diff = healPos - area.player.position
                         }
                         moveTo(healPos)
                         heal_percent_per_step = (MIN_HEAL_PERCENT + rnd.nextFloat() * (MAX_HEAL_PRECENT - MIN_HEAL_PERCENT)) * maxHitpoints / HEAL_STEPS
+                        this.logMessage("Snake is healing")
                         state = State.HEALING
                 }
                 else if(state == State.HEALING)
                 {
-
-                        hitpoints += round(heal_percent_per_step).toInt()
+                        var heal_amount = round(heal_percent_per_step).toInt()
+                        hitpoints = min(maxHitpoints,hitpoints + heal_amount)
                         heal_step++
-                        if(heal_step == HEAL_STEPS)
+                        this.logMessage("${"Snake healed for "}$heal_amount")
+                        if(heal_step == HEAL_STEPS || hitpoints == maxHitpoints)
+                        {
+                                heal_step = 0
                                 state = State.COMBAT
+                        }
                 }
         }
 }

@@ -5,10 +5,7 @@ import cz.cuni.gamedev.nail123.roguelike.blocks.Floor;
 import cz.cuni.gamedev.nail123.roguelike.blocks.GameBlock;
 import cz.cuni.gamedev.nail123.roguelike.blocks.Wall;
 import cz.cuni.gamedev.nail123.roguelike.entities.GameEntity;
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.BossGhost;
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Enemy;
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Orc;
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Rat;
+import cz.cuni.gamedev.nail123.roguelike.entities.enemies.*;
 import cz.cuni.gamedev.nail123.roguelike.entities.items.Ring;
 import cz.cuni.gamedev.nail123.roguelike.entities.objects.Chest;
 import cz.cuni.gamedev.nail123.roguelike.entities.objects.Stairs;
@@ -187,7 +184,7 @@ public class SampleJavaWorld extends World {
         return areaBuilder.build();
     }
 
-    enum Bosses{GHOST}
+    enum Bosses{GHOST,SNAKE,GOLEM}
 
     private void placeBosses(AreaBuilder area) {
         List<Integer> ints = new ArrayList<>();
@@ -196,12 +193,14 @@ public class SampleJavaWorld extends World {
             ints.add(i);
         Collections.shuffle(ints);
         ints = ints.subList(0,numBosses);
-        for(int i : ints)
+        for(int roomID : ints)
         {
-            Enemy boss = switch(Bosses.values()[i]) {
-                case Bosses.GHOST -> new BossGhost(i);
+            Enemy boss = switch(Bosses.values()[roomID]) {
+                case Bosses.GHOST -> new BossGhost(roomID);
+                case Bosses.SNAKE -> new BossSnake(roomID);
+                case Bosses.GOLEM -> new BossGolem(roomID);
             };
-            placeInRoom(area,Room.rooms.get(i).area,boss);
+            placeInRoom(area,Room.rooms.get(roomID).area,boss);
         }
     }
 
