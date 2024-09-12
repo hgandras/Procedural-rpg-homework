@@ -29,6 +29,7 @@ object GameTiles {
     val CHEST = graphicalTile("Chest")
     val POTION = graphicalTile("Potion")
     val RING = graphicalTile("Ring")
+    val DEFENSE_SHARD = graphicalTile("Sparkles")
 
     //Enemies
     val RAT = graphicalTile("Rat")
