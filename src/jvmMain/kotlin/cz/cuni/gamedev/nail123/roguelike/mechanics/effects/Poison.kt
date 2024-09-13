@@ -8,8 +8,10 @@ class Poison(override val strength: Int) : Effect {
     override val maxTime : Int = 5
     override var time: Int = 0
     var appliedOnce :Boolean = false
+
     override fun tick(entity: HasCombatStats) {
         if(time == maxTime){
+            entity.attack += strength * multiplier
             time = 0
             appliedOnce = false
             entity.statusEffect = NoEffect()
