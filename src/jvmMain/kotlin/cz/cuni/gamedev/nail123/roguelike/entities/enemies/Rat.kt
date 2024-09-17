@@ -13,9 +13,9 @@ class Rat(roomID: Int = -1): Enemy(GameTiles.RAT,roomID), HasSmell {
     override val blocksVision = false
     override val smellingRadius = 7
 
-    override val maxHitpoints = 10
-    override var hitpoints = 6
-    override var attack = 3
+    override val maxHitpoints = 5
+    override var hitpoints = 5
+    override var attack = 2
     override var defense = 0
     override var statusEffect: Effect = NoEffect()
     override var weaponStatusEffect: Effect= NoEffect()

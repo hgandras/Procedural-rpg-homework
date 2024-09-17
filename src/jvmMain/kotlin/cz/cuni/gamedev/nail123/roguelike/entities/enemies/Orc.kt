@@ -11,12 +11,12 @@ import cz.cuni.gamedev.nail123.roguelike.world.worlds.Room
 
 class Orc(roomID : Int = -1) : Enemy(GameTiles.ORC,roomID), HasVision{
     override val blocksVision = false
-    override val visionRadius = 7
+    override val visionRadius = 3 //Small, so you can escape them at the start
 
-    override val maxHitpoints = 50
-    override var hitpoints = 50
-    override var attack = 4
-    override var defense = 0
+    override val maxHitpoints = 5
+    override var hitpoints = 7
+    override var attack = 3
+    override var defense = 1
     override var statusEffect: Effect = NoEffect()
     override var weaponStatusEffect: Effect = NoEffect()
     var room = Room.rooms[roomID]

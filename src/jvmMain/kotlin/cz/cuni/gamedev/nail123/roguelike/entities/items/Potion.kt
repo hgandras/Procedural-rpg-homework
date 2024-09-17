@@ -14,8 +14,11 @@ class Potion : GameEntity(GameTiles.POTION), Interactable {
     val healHP : Int = 5
 
     private fun pickUp(player:Player){
-        player.hitpoints = min(player.hitpoints + healHP, player.maxHitpoints)
-        this.area.removeEntity(this)
+        if(player.hitpoints < player.maxHitpoints)
+        {
+            player.hitpoints = min(player.hitpoints + healHP, player.maxHitpoints)
+            this.area.removeEntity(this)
+        }
     }
 
     override fun acceptInteractFrom(other: GameEntity, type: InteractionType) = interactionContext(other, type)  {

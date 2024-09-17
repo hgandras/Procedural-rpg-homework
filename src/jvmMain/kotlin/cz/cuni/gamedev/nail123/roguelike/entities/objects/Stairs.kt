@@ -7,6 +7,7 @@ import cz.cuni.gamedev.nail123.roguelike.entities.attributes.Interactable
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.InteractionType
 import cz.cuni.gamedev.nail123.roguelike.entities.attributes.interactionContext
 import cz.cuni.gamedev.nail123.roguelike.tiles.GameTiles
+import cz.cuni.gamedev.nail123.roguelike.world.worlds.WorldConfig
 
 class Stairs(val leadDown: Boolean = true): GameEntity(
         if (leadDown) GameTiles.STAIRS_DOWN else GameTiles.STAIRS_UP,
@@ -18,7 +19,9 @@ class Stairs(val leadDown: Boolean = true): GameEntity(
 
     override fun acceptInteractFrom(other: GameEntity, type: InteractionType) = interactionContext(other, type) {
         withEntity<Player>(InteractionType.STEPPED_ON) {
-            if (leadDown && it.ringsCollected == it.ringsToCollect) area.world.moveDown() else if (it.ringsCollected == it.ringsToCollect) area.world.moveUp()
+            if (leadDown && it.bossesKilled == WorldConfig.NUM_BOSSES) {
+                area.world.moveDown()
+            } else if(!leadDown) area.world.moveUp()
         }
     }
 }

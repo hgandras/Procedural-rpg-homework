@@ -16,14 +16,13 @@ import kotlin.random.Random
 
 //IDEA: The snake boss has a special healing ability, and is faster than you. The snake can also poison you
 //with its attacks (reduces attack damage). Healing attacks start, when it loses about 30 percent of its hp
-class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE,roomID),HasVision {
+class BossSnake(roomID : Int) : Boss(GameTiles.BOSS_SNAKE,roomID),HasVision {
         override val blocksVision: Boolean = false
-        override val visionRadius = 100
-        override val maxHitpoints: Int = 100
-
-        override var hitpoints: Int = 100
-        override var attack: Int = 20
-        override var defense: Int = 5
+        override val visionRadius = 4
+        override val maxHitpoints: Int = 30
+        override var hitpoints: Int = 30
+        override var attack: Int = 4
+        override var defense: Int = 2
         override var statusEffect: Effect = NoEffect()
         override var weaponStatusEffect: Effect = NoEffect()
 
@@ -35,12 +34,12 @@ class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE,roomID),HasVision {
         var poison_step = 0
         var heal_percent_per_step = 0.0
         var heal_step = 0
+        var lastHp = maxHitpoints
 
-        val HEALING_ATTACK_CHANCE = 0.1
         val POISON_CHANCE = 0.1
         val POISON_COOLDOWN = 10
         val HEAL_DISTANCE_FROM_PLAYER = 6
-        val HEAL_STEPS = 10
+        val HEAL_STEPS = 5
         val MAX_HEAL_PRECENT = 0.2
         val MIN_HEAL_PERCENT = 0.1
         val HEAL_MOVE_THRESHOLD = 0.3
@@ -70,11 +69,11 @@ class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE,roomID),HasVision {
                         }
 
                         if(rnd.nextFloat() < POISON_CHANCE && poison_step == 0) {
-                                statusEffect = Poison(3)
+                                weaponStatusEffect = Poison(1)
                                 poison_step++
                         }
 
-                        if(hitpoints/maxHitpoints<HEAL_MOVE_THRESHOLD && rnd.nextFloat()<HEALING_ATTACK_CHANCE)
+                        if(hitpoints/maxHitpoints<HEAL_MOVE_THRESHOLD && lastHp - hitpoints >= 15)
                                 state = State.CHOOSE_POS
                 }
                 else if(state == State.CHOOSE_POS)
@@ -93,13 +92,14 @@ class BossSnake(roomID : Int) : Enemy(GameTiles.BOSS_SNAKE,roomID),HasVision {
                 }
                 else if(state == State.HEALING)
                 {
-                        var heal_amount = round(heal_percent_per_step).toInt()
-                        hitpoints = min(maxHitpoints,hitpoints + heal_amount)
+                        val healAmount = round(heal_percent_per_step).toInt()
+                        hitpoints = min(maxHitpoints,hitpoints + healAmount)
                         heal_step++
-                        this.logMessage("${"Snake healed for "}$heal_amount")
+                        this.logMessage("${"Snake healed for "}$healAmount")
                         if(heal_step == HEAL_STEPS || hitpoints == maxHitpoints)
                         {
                                 heal_step = 0
+                                lastHp = hitpoints
                                 state = State.COMBAT
                         }
                 }

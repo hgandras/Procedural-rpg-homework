@@ -1,10 +1,8 @@
 package cz.cuni.gamedev.nail123.roguelike.mechanics
 
 import cz.cuni.gamedev.nail123.roguelike.entities.GameEntity
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Enemy
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Orc
-import cz.cuni.gamedev.nail123.roguelike.entities.enemies.Rat
-import cz.cuni.gamedev.nail123.roguelike.entities.items.Item
+import cz.cuni.gamedev.nail123.roguelike.entities.enemies.*
+import cz.cuni.gamedev.nail123.roguelike.entities.items.DefenseShard
 import cz.cuni.gamedev.nail123.roguelike.entities.items.Sword
 import cz.cuni.gamedev.nail123.roguelike.entities.objects.Chest
 import cz.cuni.gamedev.nail123.roguelike.entities.items.Potion
@@ -38,9 +36,10 @@ object LootSystem {
         }
 
         private fun pickDrop(): ItemDrop {
-            val randNumber = Random.Default.nextInt(totalProb)
+            var randNumber = Random.Default.nextInt(totalProb)
             for (drop in possibleDrops) {
-                if (randNumber < drop.first) return drop.second
+                randNumber -= drop.first
+                if (randNumber < 0) return drop.second
             }
             // Never happens, but we need to place something here anyway
             return possibleDrops.last().second
@@ -50,32 +49,46 @@ object LootSystem {
     val rnd = Random.Default
 
     //Weapons
-    val simpleSword = SingleDrop{ Sword(rnd.nextInt(3) + 3, NoEffect(), "Sword") }
-    val fireSword = SingleDrop{Sword(rnd.nextInt(2) + 1,FireEffect(10), "Fire Sword")}
-    val poisonSword = SingleDrop{Sword(rnd.nextInt(3) + 2, Poison(1), "Poison Sword")}
+    val simpleSword = SingleDrop{ Sword(rnd.nextInt(2) + 3, NoEffect(), "Sword") }
+    val fireSword = SingleDrop{Sword(rnd.nextInt(2) + 2,FireEffect(1), "Fire Sword")}
+    val poisonSword = SingleDrop{Sword(rnd.nextInt(2) + 2, Poison(1), "Poison Sword")}
 
-    val strongSword = SingleDrop{Sword(rnd.nextInt(4) + 4, NoEffect(), "Sword+")}
-    val fireStrongSword = SingleDrop{Sword(rnd.nextInt(3) + 2, FireEffect(1), "Fire Sword+")}
-    val poisonStrongSword = SingleDrop{Sword(rnd.nextInt(4) + 3,Poison(1), "Poison Sword+")}
+    val strongSword = SingleDrop{Sword(rnd.nextInt(3) + 4, NoEffect(), "Sword+")}
+    val fireStrongSword = SingleDrop{Sword(rnd.nextInt(2) + 2, FireEffect(1), "Fire Sword+")}
+    val poisonStrongSword = SingleDrop{Sword(rnd.nextInt(3) + 2,Poison(1), "Poison Sword+")}
 
     val potion = SingleDrop{ Potion() }
+    val defenseShard = SingleDrop{ DefenseShard() }
 
     val enemyDrops = mapOf(
         Rat::class to TreasureClass(1, listOf(
-            2 to NoDrop,
-            1 to simpleSword
+            3 to NoDrop,
+            1 to potion
         )),
         Orc::class to TreasureClass(1, listOf(
+            2 to NoDrop,
+            5 to potion
+        )),
+        BossSnake::class to TreasureClass(1, listOf(
+            1 to strongSword,
+            1 to fireSword,
             1 to poisonSword
+        )),
+        BossGhost::class to TreasureClass(1, listOf(
+            1 to strongSword,
+            1 to fireSword,
+            1 to poisonSword
+        )),
+        BossGolem::class to TreasureClass(1, listOf(
+            1 to defenseShard,
         ))
     )
 
+    //Chests drop
     val chestDrops = mapOf(
         Chest::class to TreasureClass(1, listOf(
-            85 to potion,
-            5 to strongSword,
-            5 to fireStrongSword,
-            5 to poisonStrongSword
+            1 to simpleSword,
+            2 to potion
     )))
 
     fun onDeath(enemy: Enemy){

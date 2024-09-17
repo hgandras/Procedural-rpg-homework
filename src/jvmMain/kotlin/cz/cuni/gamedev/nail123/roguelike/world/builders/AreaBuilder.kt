@@ -15,7 +15,7 @@ abstract class AreaBuilder(
         override val size: Size3D = GameConfig.AREA_SIZE,
         val visibleSize: Size3D = GameConfig.VISIBLE_SIZE): IArea {
 
-    // We always set the unknown position as a place for unplaceable entities (such as FogOfWar)
+    // We always set the unknown position as a place for unplacable entities (such as FogOfWar)
     final override var blocks = observableMapOf<Position3D, GameBlock>(Position3D.unknown() to Floor())
 
     override fun get(position: Position3D) = blocks[position]

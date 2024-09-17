@@ -33,8 +33,8 @@ object GameConfig {
     )
 
     // If you want to have larger-than-screen areas and scrolling, modify this
-    val AREA_SIZE = VISIBLE_SIZE
-    //val AREA_SIZE = Size3D.create(100, 66, 1)
+    //val AREA_SIZE = VISIBLE_SIZE
+    val AREA_SIZE = Size3D.create(100, 66, 1)
 
 
     fun buildAppConfig() = AppConfig.newBuilder()

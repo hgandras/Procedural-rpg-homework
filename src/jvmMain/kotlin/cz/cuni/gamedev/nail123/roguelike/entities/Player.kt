@@ -17,17 +17,16 @@ class Player: MovingEntity(GameTiles.PLAYER), HasVision, HasCombatStats, HasInve
     override val blocksMovement = true
     override val blocksVision = false
 
-    override var maxHitpoints = 1000000
-    override var hitpoints = 1000000
-    override var attack = 5
+    override var maxHitpoints = 25
+    override var hitpoints = 25
+    override var attack = 2
     override var defense = 1
     override var statusEffect: Effect = NoEffect()
     override var weaponStatusEffect : Effect = NoEffect()
     override val inventory = Inventory(this)
 
-    var ringsCollected : Int = 0
-    val ringsToCollect : Int = 4
-
+    var bossesKilled = 0
+    var defenseShardPicked = false //Only one defense shard can be picked
 
     override fun die() {
         super.die()

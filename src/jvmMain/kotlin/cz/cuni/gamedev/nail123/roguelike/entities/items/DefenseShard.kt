@@ -11,11 +11,15 @@ class DefenseShard : GameEntity(GameTiles.DEFENSE_SHARD),Interactable {
     override val blocksMovement: Boolean = false
     override val blocksVision: Boolean = false
 
-    val defenseUp : Int = 5
+    val defenseUp : Int = 1
 
     private fun pickUp(player: Player){
-        player.defense+= defenseUp
-        this.area.removeEntity(this)
+        if(!player.defenseShardPicked)
+        {
+            player.defense+= defenseUp
+            this.area.removeEntity(this)
+            player.defenseShardPicked = true
+        }
     }
 
     override fun acceptInteractFrom(other: GameEntity, type: InteractionType) = interactionContext(other, type)  {

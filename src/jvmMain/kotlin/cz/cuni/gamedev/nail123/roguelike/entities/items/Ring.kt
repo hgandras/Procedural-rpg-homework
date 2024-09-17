@@ -12,7 +12,7 @@ class Ring : GameEntity(GameTiles.RING), Interactable {
     override val blocksVision: Boolean = false
 
     private fun pickUp(player: Player){
-        player.ringsCollected+=1
+        player.bossesKilled+=1
         this.area.removeEntity(this)
     }
 

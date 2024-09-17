@@ -39,7 +39,7 @@ public class SampleJavaWorld extends World {
     Area buildLevel() {
         // Start with an empty area
         AreaBuilder areaBuilder = (new EmptyAreaBuilder()).create();
-
+        Room.rooms.clear();
 
         Box baseArea = new Box(0,0,areaBuilder.getWidth()-2,areaBuilder.getHeight()-2);
         SplitTree wallsTree = new SplitTree(baseArea,WorldConfig.AREA_SPLITS);
@@ -169,13 +169,22 @@ public class SampleJavaWorld extends World {
         }
 
         //Populate rooms
-        placeBosses(areaBuilder);
+        //Getting rooms with bosses
+        List<Integer> roomIDs = new ArrayList<>();
+        for(int i = 0; i < Room.rooms.size(); i++)
+            roomIDs.add(i);
+        Collections.shuffle(roomIDs);
+        roomIDs = roomIDs.subList(0,WorldConfig.NUM_BOSSES);
+
+        placeBosses(areaBuilder, roomIDs);
         placeInRoom(areaBuilder, start_room, areaBuilder.getPlayer());
         // Place the stairs at an empty location in the top-right quarter
         placeInRoom(areaBuilder, goal_room, new Stairs());
 
         for(int roomID = 0;roomID< Room.rooms.size();roomID++  )
         {
+            if(roomIDs.contains(roomID))
+                continue;
             placeEnemies(areaBuilder,roomID);
             placeChests(areaBuilder,roomID);
         }
@@ -184,23 +193,30 @@ public class SampleJavaWorld extends World {
         return areaBuilder.build();
     }
 
-    enum Bosses{GHOST,SNAKE,GOLEM}
+    enum Bosses{GHOST,SNAKE}
 
-    private void placeBosses(AreaBuilder area) {
-        List<Integer> ints = new ArrayList<>();
-        int numBosses = Bosses.values().length;
-        for(int i = 0;i<numBosses;i++)
-            ints.add(i);
-        Collections.shuffle(ints);
-        ints = ints.subList(0,numBosses);
-        for(int roomID : ints)
+    private void placeBosses(AreaBuilder area, List<Integer> roomIDs) {
+
+        //Placing bosses randomly
+        Random rnd= new Random();
+        int numBossTypes = Bosses.values().length;
+        boolean golemPlaced = false;
+        for(int roomID : roomIDs)
         {
-            Enemy boss = switch(Bosses.values()[roomID]) {
-                case Bosses.GHOST -> new BossGhost(roomID);
-                case Bosses.SNAKE -> new BossSnake(roomID);
-                case Bosses.GOLEM -> new BossGolem(roomID);
-            };
-            placeInRoom(area,Room.rooms.get(roomID).area,boss);
+            //There must be a golem boss, in order to be able to defeat the others, because the defense shard is needed for that.
+            if(!golemPlaced) {
+                golemPlaced = true;
+                placeInRoom(area,Room.rooms.get(roomID).area,new BossGolem(roomID));
+            }
+            else{
+                int bossID = rnd.nextInt(numBossTypes);
+                Enemy boss = switch(Bosses.values()[bossID]) {
+                    case Bosses.GHOST -> new BossGhost(roomID);
+                    case Bosses.SNAKE -> new BossSnake(roomID);
+                };
+                placeInRoom(area,Room.rooms.get(roomID).area,boss);
+            }
+
         }
     }
 
@@ -269,7 +285,7 @@ public class SampleJavaWorld extends World {
     {
         Room room = Room.rooms.get(roomID);
         Random rnd = new Random();
-        int numEnemies = rnd.nextInt(1,WorldConfig.MAX_ENEMIES);
+        int numEnemies = rnd.nextInt(1,WorldConfig.MAX_ENEMIES + 1);
         for(int i = 0; i<numEnemies; i++)
         {
             Enemies enemyType = Enemies.values()[rnd.nextInt(Enemies.values().length)];
@@ -288,11 +304,10 @@ public class SampleJavaWorld extends World {
     private void placeChests(AreaBuilder area, int roomID)
     {
         Random rnd = new Random();
-        int numChests = rnd.nextInt(WorldConfig.MAX_CHESTS+1);
-        for(int i = 0; i<numChests; i++)
-        {
-            placeInRoom(area,Room.rooms.get(roomID).area,new Chest(roomID));
-        }
+        double chestRoll = rnd.nextDouble();
+        Box ogArea = Room.rooms.get(roomID).area;
+        Box smallerArea = new Box(ogArea.minX + 2, ogArea.minY + 2, ogArea.maxX - 2, ogArea.maxY - 2);
+        if(chestRoll < WorldConfig.CHEST_CHANCE) placeInRoom(area,smallerArea,new Chest(roomID));
     }
 
     /**

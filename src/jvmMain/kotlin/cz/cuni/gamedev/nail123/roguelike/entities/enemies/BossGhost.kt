@@ -16,13 +16,13 @@ import kotlin.random.Random
 // The ghost is strong when it does not have any summons, and it is hard to damage it, however, you can
 //chase it down while the summons are active, and deal big damage to it. Just be careful to not die to the summons
 //The number of summons increases when the ghost has low hitpoints
-class BossGhost(roomID : Int) : Enemy(GameTiles.BOSS_GHOST, roomID),HasVision {
+class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
     override val blocksVision: Boolean = false
     override val visionRadius = 100
-    override val maxHitpoints: Int = 100
-    override var hitpoints: Int = 100
-    override var attack: Int = 20
-    override var defense: Int = 5
+    override val maxHitpoints: Int = 25
+    override var hitpoints: Int = 25
+    override var attack: Int = 4
+    override var defense: Int = 2
     override var statusEffect: Effect = NoEffect()
     override var weaponStatusEffect: Effect = NoEffect()
 
@@ -59,10 +59,8 @@ class BossGhost(roomID : Int) : Enemy(GameTiles.BOSS_GHOST, roomID),HasVision {
             if(rnd.nextFloat()<STATE_CHANGE_CHANCE)
                 state = State.SPAWNS
         }
-        else if(state == State.SPAWNS)
-        {
-            for(i in 1..NUM_SPAWNS)
-            {
+        else if(state == State.SPAWNS) {
+            for(i in 1..NUM_SPAWNS) {
                 val spawn = Rat(roomID)
                 area.addEntity(spawn,room.area.randomPos())
                 spawned_entities.addLast(spawn)
@@ -70,11 +68,9 @@ class BossGhost(roomID : Int) : Enemy(GameTiles.BOSS_GHOST, roomID),HasVision {
             state = State.FLEEING
             return
         }
-        else if(state == State.FLEEING)
-        {
+        else if(state == State.FLEEING) {
             steps_until_next_teleport++
-            if(steps_until_next_teleport == TELEPORT_STEPS)
-            {
+            if(steps_until_next_teleport == TELEPORT_STEPS) {
                 moveTo(room.area.randomPos())
                 steps_until_next_teleport = 0
             }
@@ -82,9 +78,7 @@ class BossGhost(roomID : Int) : Enemy(GameTiles.BOSS_GHOST, roomID),HasVision {
             for(spawn in spawned_entities)
                 if(spawn.hitpoints<=0)
                     spawned_entities.remove(spawn)
-            this.logMessage(spawned_entities.size.toString())
-            if(spawned_entities.isEmpty())
-            {
+            if(spawned_entities.isEmpty()) {
                 state = State.COMBAT
                 steps_until_next_teleport = 0
             }
