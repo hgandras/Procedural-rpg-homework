@@ -39,6 +39,7 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
     val TELEPORT_STEPS : Int = 5 //Adjust based on room size
 
     var steps_until_next_teleport = 0
+    var lastHp = maxHitpoints
 
     override fun update() {
         super.update()
@@ -56,7 +57,7 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
             if (canSeePlayer) {
                 goSmartlyTowards(playerPosition)
             }
-            if(rnd.nextFloat()<STATE_CHANGE_CHANCE)
+            if(lastHp - hitpoints >=10 )
                 state = State.SPAWNS
         }
         else if(state == State.SPAWNS) {
@@ -83,6 +84,7 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
             }
             this.logMessage(deadEntities.toString())
             if(deadEntities == NUM_SPAWNS) {
+                lastHp = hitpoints
                 spawned_entities.clear()
                 state = State.COMBAT
                 steps_until_next_teleport = 0
