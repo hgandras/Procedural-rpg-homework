@@ -34,7 +34,6 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
     val rnd = Random.Default
 
     //Parameters
-    val STATE_CHANGE_CHANCE = 0.1
     val NUM_SPAWNS : Int = 4
     val TELEPORT_STEPS : Int = 5 //Adjust based on room size
 
@@ -58,7 +57,10 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
                 goSmartlyTowards(playerPosition)
             }
             if(lastHp - hitpoints >=10 )
+            {
+                this.logMessage("Ghost is fleeing, kill all spawned enemies!")
                 state = State.SPAWNS
+            }
         }
         else if(state == State.SPAWNS) {
             for(i in 1..NUM_SPAWNS) {
@@ -66,6 +68,7 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
                 area.addEntity(spawn,room.area.randomPos())
                 spawned_entities.addLast(spawn)
             }
+            moveTo(room.area.randomPos())
             state = State.FLEEING
             return
         }
@@ -82,7 +85,6 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
                 if(spawn.hitpoints<=0)
                     deadEntities++
             }
-            this.logMessage(deadEntities.toString())
             if(deadEntities == NUM_SPAWNS) {
                 lastHp = hitpoints
                 spawned_entities.clear()
