@@ -70,19 +70,23 @@ class BossGhost(roomID : Int) : Boss(GameTiles.BOSS_GHOST, roomID),HasVision {
         }
         else if(state == State.FLEEING) {
             steps_until_next_teleport++
+            var deadEntities = 0
             if(steps_until_next_teleport == TELEPORT_STEPS) {
                 moveTo(room.area.randomPos())
                 steps_until_next_teleport = 0
             }
             //Check if spawns are alive
             for(spawn in spawned_entities)
+            {
                 if(spawn.hitpoints<=0)
-                    spawned_entities.remove(spawn)
-            if(spawned_entities.isEmpty()) {
+                    deadEntities++
+            }
+            this.logMessage(deadEntities.toString())
+            if(deadEntities == NUM_SPAWNS) {
+                spawned_entities.clear()
                 state = State.COMBAT
                 steps_until_next_teleport = 0
             }
         }
     }
-
 }
