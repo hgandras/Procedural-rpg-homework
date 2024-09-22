@@ -62,8 +62,8 @@ object LootSystem {
 
     val enemyDrops = mapOf(
         Rat::class to TreasureClass(1, listOf(
-            3 to NoDrop,
-            1 to potion
+
+            1 to fireSword
         )),
         Orc::class to TreasureClass(1, listOf(
             2 to NoDrop,

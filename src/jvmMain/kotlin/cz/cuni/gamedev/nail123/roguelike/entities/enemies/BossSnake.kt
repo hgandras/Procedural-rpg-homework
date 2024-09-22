@@ -46,6 +46,10 @@ class BossSnake(roomID : Int) : Boss(GameTiles.BOSS_SNAKE,roomID),HasVision {
 
         override fun update() {
                 super.update()
+
+                if(hitpoints<=0)
+                        return
+
                 val playerPosition = area.player.position
                 val inSameRoom = room.inRoom(playerPosition)
                 //Heal if player exits the room
@@ -54,6 +58,7 @@ class BossSnake(roomID : Int) : Boss(GameTiles.BOSS_SNAKE,roomID),HasVision {
                         state = State.COMBAT
                         return
                 }
+
 
                 if(state == State.COMBAT){
                         val canSeePlayer = playerPosition in Vision.getVisiblePositionsFrom(area,position,visionRadius)
